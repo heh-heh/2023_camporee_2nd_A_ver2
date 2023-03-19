@@ -11,7 +11,7 @@ int puck[5][3]={//실제 맵
 };
 int map[5][3]={0};//시뮬 돌리는 맵
 int O_Puck[4]={1,3,2,9};//우선 순위
-int number[3]={8,2,4};//바코드 갯수(오른쪽에서 부터)
+int number[3]={8,2,4},num2[3];//바코드 갯수(오른쪽에서 부터)
 int f_puck[3]={0,0,0};//완성 판별용
 int home=1;//출발&도착 지점
 int count=0;
@@ -25,20 +25,26 @@ void func(void);//sort 와 무브를 사용 하는 곳
 //void swap(int * num11, int * num22){int temp=*num11; *num11=*num22; *num22=temp;}//스왑
 int counttt=0;
 int main(void){
-    func();
-
-    printf("\n\n ====MAP====\n");
-    for(int i=4; i>=0; i--){
-            for(int j=0; j<3; j++)
-                printf("%3d ", map[i][j]);
-            printf("\n\n");
-        }
-    printf(" ====PUCK====\n");
     for(int i=4; i>=0; i--){
             for(int j=0; j<3; j++)
                 printf("%3d ", puck[i][j]);
             printf("\n\n");
         }
+        getchar();
+    func();
+
+    printf("\n\n ====MAP====\n");
+    for(int i=4; i>=0; i--){
+        for(int j=0; j<3; j++)
+            printf("%3d ", map[i][j]);
+        printf("\n\n");
+    }
+    printf(" ====PUCK====\n");
+    for(int i=4; i>=0; i--){
+        for(int j=0; j<3; j++)
+            printf("%3d ", puck[i][j]);
+        printf("\n\n");
+    }
     // printf(" ====S_MAP====\n");
     // for(int i=4; i>=0; i--){
     //         for(int j=0; j<3; j++)
@@ -58,6 +64,7 @@ void sort(void)
 {
     int fp=0,npc;
     int np[5]={0,};
+    int need_puck[10][2]={0,};
     for(int i=0; i<3; i++) printf("%d", number[i]);
     for(int i=0; i<3; i++) for(int j=4; j>=0; j--) for(int ii=0; ii<3; ii++) if(map[j][i]==number[ii]){map[j][i]*=-1;number[ii]=0;break;}
     for(int i=0; i<3; i++){
@@ -69,12 +76,6 @@ void sort(void)
                 }
                 else{
                     int x=j+1,cnn=0;
-                    // printf("\n\n ====MAP====\n");
-                    // for(int i=4; i>=0; i--){
-                    //         for(int j=0; j<3; j++)
-                    //             printf("%3d ", map[i][j]);
-                    //         printf("\n\n");
-                    //     }
                     for(int ii=j+1; ii<5; ii++){if(map[ii][i]<0)cnn++;else if(map[ii][i]==0)break;}
                     while(cnn){
                         int ck=0;
@@ -82,7 +83,7 @@ void sort(void)
                             if(ii!=i){
                                 for(int jj=0; jj<5; jj++){
                                     if(map[jj][ii]==0){
-                                        printf("\n%d %d : %d %d",j+cnn,i, jj, ii);getchar();
+                                        //printf("\n%d %d : %d %d",j+cnn,i, jj, ii);getchar();
                                         path[pt][0]=j+cnn;path[pt][1]=i; path[pt][3]=jj;path[pt++][4]=ii;
                                         swap(map[j+cnn][i],map[jj][ii]);cnn--;ck=1;break;
                                     }
@@ -98,23 +99,90 @@ void sort(void)
         }
     }
     
+    while(num2[0]||num2[1]||num2[2]){
+        int ck=0;
+        for(int i=4; i>=0&&ck==0; i--){
+            for(int j=0; j<3&&ck==0; j++){
+                if(map[i][j]>-4&&map[i][j]!=0&&abs(map[i][j])!=num2[j]){
+                    if(map[i+1][j]==0){
+                        int fp=0,ckk=0;
+                        for(int ii=0; ii<3; ii++) if(abs(map[i][j])==num2[ii])fp=ii;
+                        for(int ii=0; ii<5; ii++) if(map[ii][fp]>-4&&map[ii][fp]!=0) ckk=1;
+                        if(ckk){
+                            
+                            for(int ii=0; ii<5&&ck==0; ii++){
+                                if(map[ii][fp]>-4){
+                                    int ffp=0;
+                                    for(int iii=0; iii<3; iii++){if(abs(map[ii][fp])==num2[iii]) ffp=iii;}
+                                    for(int jj=0; jj<5; jj++){
+                                        if(map[jj][ffp]==0){
+                                            path[pt][0]=ii;path[pt][1]=fp;path[pt][3]=jj;path[pt++][4]=ffp;
+                                            swap(map[ii][fp], map[jj][ffp]);map[jj][ffp]=-9;
+                                            num2[ffp]=0;ck=1;break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else{
+                            for(int ii=0; ii<5; ii++){
+                                if(map[ii][fp]==0){
+                                    printf("%d %d %d %d", i,j, ii,fp);getwchar();
+                                    map[i][j]=-9;
+                                    path[pt][0]=i;path[pt][1]=j;path[pt][3]=ii;path[pt++][4]=fp;
+                                    swap(map[i][j], map[ii][fp]);
+                                    num2[fp]=0;ck=1;break;
+                                }
+                            }
+                        }
+                    }
+                    else if(map[i+1][j]!=0){
+                        for(int ii=0; ii<3&&ck==0; ii++){
+                            if(ii!=i){
+                                for(int jj=0; jj<5; jj++){
+                                    if(map[ii][jj]==0){
+                                        path[pt][0]=i+1;path[pt][1]=j;path[pt][3]=ii;path[pt++][4]=jj;
+                                        swap(map[i+1][j], map[ii][jj]);ck=1;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if(abs(map[i][j])==num2[j])num2[j]=0;
+            }
+        }
+        for(int i=4; i>=0; i--){
+            for(int j=0; j<3; j++)
+                printf("%3d ", map[i][j]);
+            printf("\n\n");
+        }
+        getchar();
+    }
 }
+
 //정렬 준비+move
 void func(void){
-    for(int i=0; i<3; i++) for(int j=0; j<5; j++) map[j][i]=puck[j][i];
+    
+    for(int i=0; i<3; i++) for(int j=0; j<5; j++) {map[j][i]=puck[j][i]; num2[i]=number[i];}
     int fsum=0;
+    
     for(int i=0; i<3; i++){
         for(int j=0; j<5; j++){
-            if(fsum+map[j][i]<=number[i]&&map[j][i]!=0){
-                fsum+=map[j][i];map[j][i]=-9;
+            if(number[i]-map[j][i]<0){break;}
+            else if(number[i]-map[j][i]>0&&map[j][i]!=0){
+                num2[i]=number[i]-=map[j][i];map[j][i]=-9;
             }
-            else if(fsum+map[j][i]==number[i]){map[j][i]=-9;number[i]=0;break;}
-            else break;
+            else if(number[i]-map[j][i]==0&&map[j][i]){map[j][i]=-9;number[i]=0;num2[i]=0;break;}
         }
-        number[i]-=fsum;
-        fsum=0;
     }
-
+    for(int i=4; i>=0; i--){
+            for(int j=0; j<3; j++)
+                printf("%3d ", map[i][j]);
+            printf("\n\n");
+        }
+        getchar();
     sort();
     for(int i=0; i<pt; i++){
         for(int j=0; j<5; j++)printf("%d ", path[i][j]);printf("\n");

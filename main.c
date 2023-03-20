@@ -139,7 +139,6 @@ void func(void){
     }
     sort();
     for(int i=0; i<pt; i++){
-        for(int j=0; j<5; j++)printf("%d ", path[i][j]);printf("\n");
         move(path[i][0],path[i][1],path[i][2],path[i][3],path[i][4]);
     }
     pt=0;

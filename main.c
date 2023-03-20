@@ -22,42 +22,9 @@ void sort(void);//퍽 정렬
 void move(int x, int y, int t, int ex, int ey);// 무브
 void findnum(void);// 숫자를 입력 받고 그에 해당 하는 퍽을 지정 해줌
 void func(void);//sort 와 무브를 사용 하는 곳
-//void swap(int * num11, int * num22){int temp=*num11; *num11=*num22; *num22=temp;}//스왑
 int counttt=0;
 int main(void){
-    for(int i=4; i>=0; i--){
-            for(int j=0; j<3; j++)
-                printf("%3d ", puck[i][j]);
-            printf("\n\n");
-        }
-        getchar();
     func();
-
-    printf("\n\n ====MAP====\n");
-    for(int i=4; i>=0; i--){
-        for(int j=0; j<3; j++)
-            printf("%3d ", map[i][j]);
-        printf("\n\n");
-    }
-    printf(" ====PUCK====\n");
-    for(int i=4; i>=0; i--){
-        for(int j=0; j<3; j++)
-            printf("%3d ", puck[i][j]);
-        printf("\n\n");
-    }
-    // printf(" ====S_MAP====\n");
-    // for(int i=4; i>=0; i--){
-    //         for(int j=0; j<3; j++)
-    //             printf("%3d ", s_map[i][j]);
-    //         printf("\n\n");
-    //     }
-    // printf(" ====S_MAP2====\n");
-    // for(int i=4; i>=0; i--){
-    //         for(int j=0; j<3; j++)
-    //             printf("%3d ", s_map2[i][j]);
-    //         printf("\n\n");
-    //     }
-    //getchar();
 }
 //정렬
 void sort(void)
@@ -83,7 +50,6 @@ void sort(void)
                             if(ii!=i){
                                 for(int jj=0; jj<5; jj++){
                                     if(map[jj][ii]==0){
-                                        //printf("\n%d %d : %d %d",j+cnn,i, jj, ii);getchar();
                                         path[pt][0]=j+cnn;path[pt][1]=i; path[pt][3]=jj;path[pt++][4]=ii;
                                         swap(map[j+cnn][i],map[jj][ii]);cnn--;ck=1;break;
                                     }
@@ -127,7 +93,7 @@ void sort(void)
                         else{
                             for(int ii=0; ii<5; ii++){
                                 if(map[ii][fp]==0){
-                                    printf("%d %d %d %d", i,j, ii,fp);getwchar();
+                                    
                                     map[i][j]=-9;
                                     path[pt][0]=i;path[pt][1]=j;path[pt][3]=ii;path[pt++][4]=fp;
                                     swap(map[i][j], map[ii][fp]);
@@ -153,12 +119,6 @@ void sort(void)
                 else if(abs(map[i][j])==num2[j])num2[j]=0;
             }
         }
-        for(int i=4; i>=0; i--){
-            for(int j=0; j<3; j++)
-                printf("%3d ", map[i][j]);
-            printf("\n\n");
-        }
-        getchar();
     }
 }
 
@@ -177,23 +137,10 @@ void func(void){
             else if(number[i]-map[j][i]==0&&map[j][i]){map[j][i]=-9;number[i]=0;num2[i]=0;break;}
         }
     }
-    for(int i=4; i>=0; i--){
-            for(int j=0; j<3; j++)
-                printf("%3d ", map[i][j]);
-            printf("\n\n");
-        }
-        getchar();
     sort();
     for(int i=0; i<pt; i++){
         for(int j=0; j<5; j++)printf("%d ", path[i][j]);printf("\n");
         move(path[i][0],path[i][1],path[i][2],path[i][3],path[i][4]);
-        printf("======MOVE=======\n\n");
-        for(int i=4; i>=0; i--){
-            for(int j=0; j<3; j++)
-                printf("%3d ", puck[i][j]);
-            printf("\n\n");
-        }
-        getchar();
     }
     pt=0;
 }
@@ -217,20 +164,3 @@ void move(int x, int y, int t, int ex, int ey)
     }
 }
 
-//퍽을 뽑아 내는 함수
-void findnum(void){
-    int arr[5]={4};
-    int count11[4]={0};
-    
-    for(int i=0; i<3; i++)for(int j=0; j<5; j++)++count11[map[j][i]];
-    for(int i=0; i<3; i++){
-        int sum=0,pp=3,j=0;
-        while(pp){
-            if(count11[pp]&&sum+pp<=number[i]){arr[j++]=pp; --count11[pp]; sum+=pp;}
-            else if(count11[pp]&&sum+pp==number[i]){arr[j++]=pp; --count11[pp]; sum+=pp; break;}
-            else pp--;
-        }
-        for(int j=0; j<5; j++)arr[j]=arr[j]==0?4:arr[j];
-        for(int j=0; j<5 ; j++){need_puck[i][j]=arr[j]==4?0:arr[j]; arr[j]=0;}
-    }
-}
